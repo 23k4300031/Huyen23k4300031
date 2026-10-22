@@ -1,36 +1,37 @@
-# PHÂN TÍCH ON-CHAIN LAB 03: ĐỌC GIAO DỊCH VÀ HỢP ĐỒNG TRÊN ETHERSCAN
+# BÁO CÁO PHÂN TÍCH ON-CHAIN (LAB 03)
 
-## Bước 1: Bảng giải thích các trường trong một Giao dịch (Transaction)
-
-| Trường | Ý nghĩa | Vì sao người làm nghiệp vụ cần |
-| :--- | :--- | :--- |
-| **Status** | Trạng thái thành công hay thất bại của giao dịch. | Giao dịch thất bại vẫn mất phí — ảnh hưởng hạch toán. |
-| **Block** | Số thứ tự khối chứa giao dịch. | Xác định thời điểm ghi nhận giao dịch vào sổ cái. |
-| **Timestamp** | Thời gian chính xác giao dịch được xác nhận. | Mốc ghi nhận doanh thu / chi phí. |
-| **From / To** | Ví gửi / ví nhận (hoặc địa chỉ hợp đồng). | Đối tượng cần xác minh danh tính. |
-| **Value** | Số lượng token / ETH chuyển đi. | Giá trị giao dịch. |
-| **Transaction Fee** | Phí thực trả cho giao dịch ($Fee = Gas Used \times Gas Price$). | Chi phí giao dịch, cần hạch toán riêng. |
-| **Gas Price** | Đơn giá phí gas cho mỗi đơn vị tính bằng Gwei. | Giải thích vì sao cùng một giao dịch mà phí khác nhau. |
-| **Gas Limit** | Mức gas tối đa người gửi cho phép dùng. | Đặt quá thấp $\rightarrow$ giao dịch thất bại vì hết gas (*Out of Gas*) nhưng vẫn mất phí. |
-| **Gas Used** | Lượng gas thực tế đã tiêu tốn. | Cùng Gas Price với Gas Used tính ra phí: $Transaction\ Fee = Gas\ Used \times Gas\ Price$. $Gas\ Used = Gas\ Limit$ là dấu hiệu hết gas. |
-| **Nonce** | Số thứ tự giao dịch phát ra từ ví gửi. | Phát hiện giao dịch bị bỏ sót hoặc thay thế. |
+- **Sinh viên:** Lê Dương Ngọc Huyền (MSSV: 23K4300031)
+- **Repo:** https://github.com/23k4300031/Huyen23k4300031
 
 ---
 
-## Bước 2 & 3: Phân tích Hợp đồng Thông minh USDC (Ethereum Mainnet)
+## 1. Mổ xẻ Giao dịch On-chain Cá nhân (Sepolia)
+*Giao dịch thực nghiệm từ Lab 2.*
 
-- **Địa chỉ Proxy:** `0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48`
+| Trường dữ liệu | Ý nghĩa kỹ thuật | Góc nhìn nghiệp vụ & Kiểm toán |
+| :--- | :--- | :--- |
+| **Status** | Thành công / Thất bại | Giao dịch hỏng vẫn tốn phí, cần hạch toán chi phí rủi ro. |
+| **Block** | Vị trí khối chứa TX | Xác định chính xác mốc ghi nhận vào sổ cái blockchain. |
+| **Timestamp** | Thời điểm ghi nhận | Làm căn cứ chốt tỷ giá và thời gian ghi nhận doanh thu/chi phí. |
+| **From / To** | Địa chỉ ví gửi / nhận | Phục vụ định danh đối tác (KYC) và rà soát rửa tiền (AML). |
+| **Value** | Số lượng token/ETH | Giá trị tài sản gốc được chuyển giao. |
+| **Transaction Fee** | $Gas Used \times Gas Price$ | Chi phí vận hành mạng lưới, hạch toán riêng vào chi phí tài chính. |
+| **Gas Price** | Giá mỗi đơn vị gas (Gwei) | Phản ánh mức độ nghẽn mạng tại thời điểm gửi lệnh. |
+| **Gas Limit** | Lượng gas tối đa cho phép | Đặt thiếu sẽ bị hủy TX giữa chừng (*Out of Gas*) nhưng vẫn mất phí. |
+| **Gas Used** | Lượng gas tiêu thụ thực tế | Xác định chính xác chi phí thực tế; nếu bằng Limit là bị nghẽn/hết gas. |
+| **Nonce** | Số thứ tự TX của ví gửi | Kiểm tra giao dịch bị bỏ sót, ghi trùng hoặc bị đè lệnh (*override*). |
 
-### Câu trả lời theo yêu cầu bài lab:
+---
 
-1. **Hợp đồng bạn xem có công bố mã nguồn đã xác thực không?**
-   - **Có.** Mã nguồn của hợp đồng Proxy và hợp đồng Implementation (logic) đều đã được xác thực (Verified Source Code) trên Etherscan.
+## 2. Phân tích Kỹ thuật & Smart Contract (USDC/USDT)
 
-2. **Tổng cung của đồng đó là bao nhiêu? Đọc ra từ hàm nào?**
-   - **Đọc ra từ hàm:** `totalSupply()` trong tab **Read as Proxy** (hoặc `Read Contract`).
-   - **Tổng cung:** Lấy số liệu hiển thị trực tiếp từ hàm `totalSupply()` chia cho $10^6$ (vì USDC có 6 decimals).
+### A. Phân biệt Kỹ thuật
+- **Bytecode vs Verified Code:** Bytecode là chuỗi mã máy Hex cho EVM đọc. Verified Code là mã nguồn Solidity gốc đã được Etherscan đối chiếu khớp 100% với Bytecode để công khai cho người dùng kiểm tra.
+- **Hàm Read vs Write:**
+  - *Read (View/Pure):* Chỉ truy vấn dữ liệu on-chain, miễn phí gas, thực thi ngay không cần ký ví.
+  - *Write:* Thay đổi trạng thái dữ liệu trên sổ cái, tốn phí gas và bắt buộc ký qua ví MetaMask.
 
-3. **Trong tab Write Contract (với USDC: Write as Proxy), có hàm nào cho phép một địa chỉ đặc biệt đóng băng tài khoản người khác không? Nếu có, tên hàm là gì?**
-   - **Có.** 
-   - **Tên hàm:** `blacklist(address _account)` (và hàm mở đóng băng là `unblacklist(address _account)`).
-   - **Giải thích:** Hàm này thuộc cơ chế quản trị rủi ro và tuân thủ pháp lý của tổ chức phát hành (Centre/Circle), cho phép địa chỉ quản trị (Blacklister) chặn toàn bộ giao dịch chuyển tiền của địa chỉ bị đưa vào danh sách đen.
+### B. Phân tích Hợp đồng Stablecoin (USDC)
+1. **Xác thực mã nguồn:** Cả hợp đồng Proxy và Implementation của USDC đều đã được xác thực (*Verified Source Code*).
+2. **Tổng cung:** Đọc qua hàm `totalSupply()` trong tab *Read as Proxy*. Kết quả thu được cần chia cho $10^6$ (do USDC dùng 6 decimals) để ra lượng lưu thông thực tế.
+3. **Cơ chế đóng băng:** Trong tab *Write as Proxy*, chứa hàm `blacklist(address _account)` giúp bên phát hành (Circle) khóa tài khoản vi phạm. Điều này cho thấy tính quản trị tập trung vẫn tồn tại song song để đáp ứng pháp lý AML.
