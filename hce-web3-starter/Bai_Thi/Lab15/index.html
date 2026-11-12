@@ -4,21 +4,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BIGBANG Concert Hanoi 2026 - Blockchain Ticketing System</title>
+    <title>BIGBANG WORLD TOUR [MADE] HANOI - VIP Ticketing</title>
     <!-- Thư viện Ethers.js v6 -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.7.0/ethers.umd.min.js"></script>
-    <!-- Font chữ chuẩn hiện đại -->
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap"
+    <!-- Font chữ hiện đại -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap"
         rel="stylesheet">
     <style>
         :root {
-            --bg-primary: #090d16;
-            --bg-card: #111827;
-            --border-color: #1f2937;
+            --bg-primary: #05070c;
+            --bg-card: #0e1424;
+            --border-color: #1e293b;
             --accent-gold: #f59e0b;
-            --accent-hover: #d97706;
-            --text-main: #f3f4f6;
-            --text-muted: #9ca3af;
+            --accent-glow: rgba(245, 158, 11, 0.25);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
             --success-color: #10b981;
             --danger-color: #ef4444;
         }
@@ -28,23 +28,27 @@
             background-color: var(--bg-primary);
             color: var(--text-main);
             margin: 0;
-            padding: 30px 20px;
+            padding: 40px 20px;
+            background-image:
+                radial-gradient(circle at 10% 20%, rgba(30, 27, 75, 0.4) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(180, 83, 9, 0.15) 0%, transparent 40%);
+            background-attachment: fixed;
         }
 
         .container {
-            max-width: 900px;
+            max-width: 1000px;
             margin: 0 auto;
         }
 
-        /* Header Banner */
+        /* Hero Banner Sinh Động */
         .hero {
-            background: linear-gradient(135deg, #1e1b4b 0%, #111827 100%);
-            border: 1px solid var(--border-color);
-            border-radius: 20px;
-            padding: 35px;
+            background: linear-gradient(135deg, #1e1b4b 0%, #0f172a 100%);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            border-radius: 24px;
+            padding: 45px 30px;
             text-align: center;
-            margin-bottom: 25px;
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+            margin-bottom: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6), 0 0 30px rgba(245, 158, 11, 0.1);
             position: relative;
             overflow: hidden;
         }
@@ -52,308 +56,57 @@
         .hero::before {
             content: '';
             position: absolute;
-            top: -50px;
-            right: -50px;
-            width: 200px;
-            height: 200px;
-            background: rgba(245, 158, 11, 0.1);
+            top: -100px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 300px;
+            height: 300px;
+            background: rgba(245, 158, 11, 0.15);
             border-radius: 50%;
-            filter: blur(40px);
+            filter: blur(60px);
+            z-index: 0;
+        }
+
+        .hero>* {
+            position: relative;
+            z-index: 1;
         }
 
         .badge {
-            background: rgba(245, 158, 11, 0.15);
-            color: var(--accent-gold);
-            padding: 6px 14px;
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: #000;
+            padding: 6px 16px;
             border-radius: 30px;
-            font-size: 12px;
-            font-weight: 700;
-            letter-spacing: 0.5px;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 1px;
             text-transform: uppercase;
+            box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4);
         }
 
         .hero h1 {
-            margin: 15px 0 10px 0;
-            font-size: 32px;
-            font-weight: 700;
-            color: #fff;
-            letter-spacing: 0.5px;
+            margin: 20px 0 10px 0;
+            font-size: 38px;
+            font-weight: 800;
+            background: linear-gradient(to right, #fff, #cbd5e1, #f59e0b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 1px;
         }
 
         .hero p {
             color: var(--text-muted);
-            font-size: 14px;
+            font-size: 15px;
             margin: 0;
         }
 
-        /* Wallet bar */
+        /* Wallet Bar Đẳng Cấp */
         .wallet-card {
             background: var(--bg-card);
             border: 1px solid var(--border-color);
-            border-radius: 14px;
-            padding: 20px 25px;
+            border-radius: 16px;
+            padding: 22px 30px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 25px;
-        }
-
-        .wallet-status span {
-            color: var(--success-color);
-            font-weight: 600;
-        }
-
-        /* Main Layout Grid */
-        .grid-2 {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-        }
-
-        @media (max-width: 768px) {
-            .grid-2 {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        .card {
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: 16px;
-            padding: 25px;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
-            transition: transform 0.2s, border-color 0.2s;
-        }
-
-        .card:hover {
-            border-color: rgba(245, 158, 11, 0.4);
-        }
-
-        .card h3 {
-            margin-top: 0;
-            font-size: 17px;
-            color: #fff;
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 12px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        label {
-            display: block;
-            font-size: 13px;
-            color: var(--text-muted);
-            margin-bottom: 6px;
-            font-weight: 500;
-        }
-
-        input {
-            width: 100%;
-            padding: 12px 15px;
-            background: #060913;
-            border: 1px solid var(--border-color);
-            border-radius: 10px;
-            color: #fff;
-            font-size: 14px;
-            box-sizing: border-box;
-            margin-bottom: 15px;
-            transition: border-color 0.2s;
-        }
-
-        input:focus {
-            outline: none;
-            border-color: var(--accent-gold);
-        }
-
-        button {
-            background: var(--accent-gold);
-            color: #000;
-            border: none;
-            padding: 12px 20px;
-            font-size: 14px;
-            font-weight: 700;
-            border-radius: 10px;
-            cursor: pointer;
-            width: 100%;
-            transition: all 0.2s;
-            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.2);
-        }
-
-        button:hover {
-            background: var(--accent-hover);
-            transform: translateY(-1px);
-        }
-
-        .btn-outline {
-            background: transparent;
-            color: #fff;
-            border: 1px solid var(--border-color);
-            width: auto;
-            padding: 10px 18px;
-            font-weight: 600;
-            box-shadow: none;
-        }
-
-        .btn-outline:hover {
-            background: #1f2937;
-            border-color: #4b5563;
-        }
-
-        .console-box {
-            margin-top: 15px;
-            background: #060913;
-            border: 1px solid var(--border-color);
-            border-radius: 10px;
-            padding: 12px 15px;
-            font-size: 12px;
-            font-family: monospace;
-            color: #38bdf8;
-            min-height: 24px;
-            word-break: break-all;
-            line-height: 1.5;
-        }
-
-        .full-width {
-            grid-column: 1 / -1;
-        }
-    </style>
-</head>
-
-<body>
-
-    <div class="container">
-        <!-- Banner Header -->
-        <div class="hero">
-            <span class="badge">ĐỀ TÀI 6: HỆ THỐNG VÉ NFT CHỐNG ĐẦU CƠ</span>
-            <h1>BIGBANG WORLD TOUR [MADE] HANOI</h1>
-            <p>Sân vận động Quốc gia Mỹ Đình | Tích hợp Hợp đồng thông minh trên mạng Sepolia Testnet</p>
-        </div>
-
-        <!-- Thanh kết nối ví động -->
-        <div class="wallet-card">
-            <div>
-                <strong style="font-size: 13px; color: var(--text-muted); display: block; margin-bottom: 4px;">TRẠNG
-                    THÁI VÍ BLOCKCHAIN</strong>
-                <span id="walletAddress" style="font-size: 14px; color: #f3f4f6; font-family: monospace;">Chưa kết nối
-                    MetaMask</span>
-            </div>
-            <button class="btn-outline" onclick="connectWallet()">🔗 Kết nối Ví</button>
-        </div>
-
-        <!-- Các tính năng chính -->
-        <div class="grid-2">
-            <!-- Tính năng 1: Mở bán sơ cấp -->
-            <div class="card">
-                <h3>🎟️ Mua Vé Sơ Cấp (Mint NFT)</h3>
-                <p style="font-size: 13px; color: var(--text-muted); line-height: 1.5;">
-                    Mức giá cố định: <strong style="color: var(--accent-gold);">0.05 ETH</strong>.<br>
-                    Hệ thống tự động kích hoạt bộ lọc chống đầu cơ: Giới hạn tối đa 01 vé cho mỗi địa chỉ ví.
-                </p>
-                <button onclick="buyTicket()" style="margin-top: 15px;">Thanh Toán & Nhận Vé Ngay</button>
-                <div class="console-box" id="buyLog">Trạng thái giao dịch: Chờ kết nối ví...</div>
-            </div>
-
-            <!-- Tính năng 2: Tra cứu thông tin vé -->
-            <div class="card">
-                <h3>🔍 Tra Cứu Chủ Sở Hữu Vé</h3>
-                <label>Nhập Token ID của vé:</label>
-                <input type="number" id="queryId" placeholder="Ví dụ: 1">
-                <button onclick="checkOwner()" style="background: #3b82f6; color: #fff;">Truy Vấn On-Chain</button>
-                <div class="console-box" id="queryLog">Kết quả truy vấn sẽ hiển thị tại đây...</div>
-            </div>
-
-            <!-- Tính năng 3: Soát vé tại cửa (Dành cho BTC) -->
-            <div class="card full-width">
-                <h3>🛡️ Cổng Kiểm Soát Cửa Vào (Dành cho Ban Tổ Chức)</h3>
-                <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 15px;">
-                    Thực hiện quét mã định danh vé tại cửa sự kiện. Hệ thống sẽ xác thực quyền sở hữu và khóa vĩnh viễn
-                    quyền chuyển nhượng tiếp theo.
-                </p>
-                <div style="display: flex; gap: 12px;">
-                    <input type="number" id="checkinId" placeholder="Nhập Token ID cần soát vé"
-                        style="margin-bottom: 0;">
-                    <button onclick="checkInTicket()"
-                        style="background: var(--danger-color); color: #fff; width: 220px;">Xác Nhận Check-In</button>
-                </div>
-                <div class="console-box" id="checkinLog" style="margin-top: 15px;">Nhật ký cổng soát vé trống...</div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Script Tương Tác Web3 (Ethers.js v6) -->
-    <script>
-        // --- CẤU HÌNH THÔNG TIN HỢP ĐỒNG THÔNG MINH ---
-        const CONTRACT_ADDRESS = "0x...ĐIỀN_ĐỊA_CHỈ_SMART_CONTRACT_SEPOLIA_VÀO_ĐÂY...";
-        const CONTRACT_ABI = [
-            "function buyTicket() external payable",
-            "function ownerOf(uint256 tokenId) view returns (address)",
-            "function checkIn(uint256 tokenId) external"
-        ];
-
-        let provider, signer, contract;
-
-        async function connectWallet() {
-            if (window.ethereum) {
-                try {
-                    provider = new ethers.BrowserProvider(window.ethereum);
-                    signer = await provider.getSigner();
-                    const address = await signer.getAddress();
-
-                    // Khởi tạo Smart Contract
-                    contract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, signer);
-
-                    document.getElementById("walletAddress").innerHTML =
-                        `<span style="color: var(--success-color);">🟢 Đã kết nối: ${address.substring(0, 6)}...${address.substring(38)}</span>`;
-                    document.getElementById("buyLog").innerText = "Sẵn sàng thực hiện giao dịch mua vé.";
-                } catch (error) {
-                    alert("Người dùng từ chối kết nối ví!");
-                }
-            } else {
-                alert("Vui lòng cài đặt tiện ích MetaMask trên trình duyệt!");
-            }
-        }
-
-        async function buyTicket() {
-            if (!contract) { alert("Vui lòng kết nối ví MetaMask trước!"); return; }
-            try {
-                document.getElementById("buyLog").innerText = "⏳ Đang gửi yêu cầu mua vé lên mạng Sepolia (0.05 ETH)...";
-                const tx = await contract.buyTicket({ value: ethers.parseEther("0.05") });
-                document.getElementById("buyLog").innerText = `🔗 Đã gửi TX: ${tx.hash}. Đang chờ mạng xác nhận...`;
-                await tx.wait();
-                document.getElementById("buyLog").innerText = "🎉 Giao dịch thành công! Vé NFT đã được đúc vào ví của bạn.";
-            } catch (error) {
-                document.getElementById("buyLog").innerText = "❌ Lỗi giao dịch: " + (error.reason || error.message);
-            }
-        }
-
-        async function checkOwner() {
-            if (!contract) { alert("Vui lòng kết nối ví MetaMask trước!"); return; }
-            const tokenId = document.getElementById("queryId").value;
-            if (!tokenId) { alert("Vui lòng nhập Token ID cần tra cứu!"); return; }
-            try {
-                document.getElementById("queryLog").innerText = `🔍 Đang truy vấn Smart Contract cho vé #${tokenId}...`;
-                const owner = await contract.ownerOf(tokenId);
-                document.getElementById("queryLog").innerText = `✅ Vé #${tokenId} thuộc sở hữu của ví:\n${owner}`;
-            } catch (error) {
-                document.getElementById("queryLog").innerText = "❌ Không tìm thấy thông tin hoặc vé chưa được đúc!";
-            }
-        }
-
-        async function checkInTicket() {
-            if (!contract) { alert("Vui lòng kết nối ví MetaMask trước!"); return; }
-            const tokenId = document.getElementById("checkinId").value;
-            if (!tokenId) { alert("Vui lòng nhập Token ID soát vé!"); return; }
-            try {
-                document.getElementById("checkinLog").innerText = `🛡️ Đang thực hiện khóa vé #${tokenId} tại cổng soát vé...`;
-                const tx = await contract.checkIn(tokenId);
-                await tx.wait();
-                document.getElementById("checkinLog").innerText = `✅ Check-in thành công cho vé #${tokenId}! Vé đã chính thức được khóa trạng thái sử dụng.`;
-            } catch (error) {
-                document.getElementById("checkinLog").innerText = "❌ Lỗi check-in: " + (error.reason || error.message);
-            }
-        }
-    </script>
-</body>
-
-</html>
+            margin-bottom: 30px;
